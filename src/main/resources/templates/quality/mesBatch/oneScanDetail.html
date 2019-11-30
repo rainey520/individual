@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <input type="hidden" id="bId" name="bId" th:value="${bId}">
+                <div class="select-list">
+                    <ul>
+
+                        <li>
+                            排序信息：<input type="text" name="orderNum" style="width: 80px"/>
+                        </li>
+
+                        <li>
+                            扫码信息：<input type="text" name="smInfo"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+
+    var prefix = ctx + "mes/mesBatchDetail";
+
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            modalName: "MES个体扫码记录",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            sortOrder: "desc",
+            sortName: "cTime",
+            columns: [
+                {
+                    field : 'id',
+                    title : '主键，自增长',
+                    visible: false
+                },
+                {
+                    field : 'orderNum',
+                    title : '扫码排序',
+                    sortable: true,
+                    width:80
+                },
+                {
+                    field : 'smInfo',
+                    title : '扫码信息',
+                    sortable: true,
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value,40);
+                    }
+                },
+                {
+                    field : 'cTime',
+                    title : '扫码时间',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+        $.table.search("formId")
+    });
+    // 关闭窗口
+    function submitHandler() {
+        $.modal.close();
+    }
+</script>
+</body>
+</html>

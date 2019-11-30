@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <input type="hidden" id="workCode" name="workCode" th:value="${workCode}">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            产品建档信息：<input type="text" name="pnMainInfo" id="pnMainInfo"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('mes:mesBatch:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('mes:mesBatch:remove')}]];
+    var prefix = ctx + "mes/mesBatch";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            modalName: "工单建档信息",
+            search: false,
+            showExport: false,
+            showSearch: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            columns: [
+                {
+                    field: 'id',
+                    title: '主键，自增长',
+                    visible: false
+                },
+                {
+                    field: 'pnMainInfo',
+                    title: '产品建档信息',
+                    sortable: true
+                },
+                {
+                    field: 'sign',
+                    title: '扫码标记(0未扫、1已扫)',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="javascript:void(0)" onclick="showScanDetail(\'' + row.pnMainInfo + '\',\'' + row.id + '\')"><i class="fa fa-eye"></i>扫码明细</a> ');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+        $.table.search("formId");
+    });
+
+    /**
+     * 查看扫码明细信息
+     */
+    function showScanDetail(mainInfo,bId) {
+        var url = ctx + "mes/mesBatchDetail/scanDetail?bId=" + bId;
+        $.modal.open(mainInfo + "--扫码明细",url);
+    }
+
+    // 关闭窗口
+    function submitHandler() {
+        $.modal.close();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/layer/laydate/laydate.css}" rel="stylesheet"/>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <form class="form-horizontal m" id="mes-config">
+                <input type="hidden" id="id" th:value="${config.id}">
+                <table class="table table-striped table-bordered table-hover ">
+                    <thead>
+                    <tr>
+                        <th style="width: 70%">前部分建档信息</th>
+                        <th style="width: 30%">随机数个数</th>
+                    </tr>
+                    </thead>
+                    <tbody id="add-mes-config-table">
+                    <tr>
+                        <td><input type="text" id="conRule" class="form-control" th:value="${config.conRule}"></td>
+                        <td><input type="number" id="con1" class="form-control" th:value="${config.con1}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <span style="font-weight: bold;color: red;text-align: right">备注:随机数个数不小于8，不大于12，不能有小数点</span>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script th:inline="javascript">
+    var prefix = ctx + "device/devWorkOrder";
+
+    /**
+     * 提交信息
+     */
+    function submitHandler() {
+        var conRule = $.common.trim($("#conRule").val());
+        if ($.common.isEmpty(conRule)) {
+            $.modal.alertWarning("请输入建档前部分规则信息");
+            return;
+        }
+        var con1 = $("#con1").val();
+        if ($.common.isEmpty(con1) || con1 < 8 || con1 > 12 || (con1 + '').indexOf('.') != -1) {
+            $.modal.alertWarning("随机数个数格式错误");
+            return;
+        }
+        var data = {
+            id:$("#id").val(),
+            conRule: conRule,
+            con1: con1,
+            cType: 4
+        }
+        var config = {
+            url: prefix + "/saveWorkMesConfig",
+            type: "post",
+            dataType: "json",
+            data: data,
+            beforeSend: function () {
+                $.modal.loading("正在处理中，请稍后...");
+                $.modal.disable();
+            },
+            success: function (result) {
+                $.operate.successCallback(result);
+            }
+        };
+        $.ajax(config)
+    }
+</script>
+</body>
+</html>

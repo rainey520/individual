@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.quality.mesBatchDetail.mapper.MesBatchDetailMapper">
+    
+    <resultMap type="MesBatchDetail" id="MesBatchDetailResult">
+        <result property="id"    column="id"    />
+        <result property="bId"    column="b_id"    />
+        <result property="workCode"    column="work_code"    />
+        <result property="pnCode"    column="pn_code"    />
+        <result property="pnMainInfo"    column="pn_main_info"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="smInfo"    column="sm_info"    />
+        <result property="cTime"    column="c_time"    />
+    </resultMap>
+	
+	<sql id="selectMesBatchDetailVo">
+        select id, b_id, work_code, pn_code, pn_main_info, order_num, sm_info, c_time from tab_mes_batch_detail
+    </sql>
+	
+    <select id="selectMesBatchDetailList" parameterType="MesBatchDetail" resultMap="MesBatchDetailResult">
+        <include refid="selectMesBatchDetailVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="bId != null "> and b_id = #{bId}</if>
+             <if test="workCode != null  and workCode != '' "> and work_code = #{workCode}</if>
+             <if test="pnCode != null  and pnCode != '' "> and pn_code = #{pnCode}</if>
+             <if test="pnMainInfo != null  and pnMainInfo != '' "> and pn_main_info = #{pnMainInfo}</if>
+             <if test="orderNum != null "> and order_num = #{orderNum}</if>
+             <if test="smInfo != null  and smInfo != '' "> and sm_info = #{smInfo}</if>
+             <if test="cTime != null "> and c_time = #{cTime}</if>
+         </where>
+    </select>
+    
+    <select id="selectMesBatchDetailById" parameterType="Integer" resultMap="MesBatchDetailResult">
+        <include refid="selectMesBatchDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesBatchDetail" parameterType="MesBatchDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_mes_batch_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="bId != null  ">b_id,</if>
+			<if test="workCode != null  and workCode != ''  ">work_code,</if>
+			<if test="pnCode != null  and pnCode != ''  ">pn_code,</if>
+			<if test="pnMainInfo != null  and pnMainInfo != ''  ">pn_main_info,</if>
+			<if test="orderNum != null  ">order_num,</if>
+			<if test="smInfo != null  and smInfo != ''  ">sm_info,</if>
+			<if test="cTime != null  ">c_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="bId != null  ">#{bId},</if>
+			<if test="workCode != null  and workCode != ''  ">#{workCode},</if>
+			<if test="pnCode != null  and pnCode != ''  ">#{pnCode},</if>
+			<if test="pnMainInfo != null  and pnMainInfo != ''  ">#{pnMainInfo},</if>
+			<if test="orderNum != null  ">#{orderNum},</if>
+			<if test="smInfo != null  and smInfo != ''  ">#{smInfo},</if>
+			<if test="cTime != null  ">#{cTime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMesBatchDetail" parameterType="MesBatchDetail">
+        update tab_mes_batch_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bId != null  ">b_id = #{bId},</if>
+            <if test="workCode != null  and workCode != ''  ">work_code = #{workCode},</if>
+            <if test="pnCode != null  and pnCode != ''  ">pn_code = #{pnCode},</if>
+            <if test="pnMainInfo != null  and pnMainInfo != ''  ">pn_main_info = #{pnMainInfo},</if>
+            <if test="orderNum != null  ">order_num = #{orderNum},</if>
+            <if test="smInfo != null  and smInfo != ''  ">sm_info = #{smInfo},</if>
+            <if test="cTime != null  ">c_time = #{cTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteMesBatchDetailById" parameterType="Integer">
+        delete from tab_mes_batch_detail where id = #{id}
+    </delete>
+	
+    <delete id="deleteMesBatchDetailByIds" parameterType="String">
+        delete from tab_mes_batch_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

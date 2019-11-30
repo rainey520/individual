@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.quality.mesBatch.mapper.MesBatchMapper">
+    
+    <resultMap type="MesBatch" id="MesBatchResult">
+        <result property="id"    column="id"    />
+        <result property="companyId"    column="company_id"    />
+        <result property="workCode"    column="work_code"    />
+        <result property="lineId"    column="line_id"    />
+        <result property="pnCode"    column="pn_code"    />
+        <result property="sign"    column="sign"    />
+        <result property="pnMainInfo"    column="pn_main_info"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+	
+	<sql id="selectMesBatchVo">
+        select id, company_id, work_code,line_id, pn_code, sign, pn_main_info, status from tab_mes_batch
+    </sql>
+	
+    <select id="selectMesBatchList" parameterType="MesBatch" resultMap="MesBatchResult">
+        <include refid="selectMesBatchVo"/>
+        <where>
+             <if test="id != null "> and id = #{id}</if>
+             <if test="companyId != null "> and company_id = #{companyId}</if>
+             <if test="workCode != null  and workCode != '' "> and work_code = #{workCode}</if>
+             <if test="pnCode != null  and pnCode != '' "> and pn_code = #{pnCode}</if>
+             <if test="sign != null  and sign != '' "> and sign = #{sign}</if>
+             <if test="pnMainInfo != null  and pnMainInfo != '' "> and pn_main_info = #{pnMainInfo}</if>
+             <if test="status != null "> and status = #{status}</if>
+         </where>
+    </select>
+    
+    <select id="selectMesBatchById" parameterType="Integer" resultMap="MesBatchResult">
+        <include refid="selectMesBatchVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMesBatch" parameterType="MesBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into tab_mes_batch
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">company_id,</if>
+			<if test="workCode != null  and workCode != ''  ">work_code,</if>
+            <if test="lineId != null  and lineId != ''  ">line_id,</if>
+			<if test="pnCode != null  and pnCode != ''  ">pn_code,</if>
+			<if test="sign != null  and sign != ''  ">sign,</if>
+			<if test="pnMainInfo != null  and pnMainInfo != ''  ">pn_main_info,</if>
+			<if test="status != null  ">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyId != null  ">#{companyId},</if>
+			<if test="workCode != null  and workCode != ''  ">#{workCode},</if>
+            <if test="lineId != null  and lineId != ''  ">#{lineId},</if>
+			<if test="pnCode != null  and pnCode != ''  ">#{pnCode},</if>
+			<if test="sign != null  and sign != ''  ">#{sign},</if>
+			<if test="pnMainInfo != null  and pnMainInfo != ''  ">#{pnMainInfo},</if>
+			<if test="status != null  ">#{status},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMesBatch" parameterType="MesBatch">
+        update tab_mes_batch
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyId != null  ">company_id = #{companyId},</if>
+            <if test="workCode != null  and workCode != ''  ">work_code = #{workCode},</if>
+            <if test="lineId != null  and lineId != ''  ">line_id = #{lineId},</if>
+            <if test="pnCode != null  and pnCode != ''  ">pn_code = #{pnCode},</if>
+            <if test="sign != null  and sign != ''  ">sign = #{sign},</if>
+            <if test="pnMainInfo != null  and pnMainInfo != ''  ">pn_main_info = #{pnMainInfo},</if>
+            <if test="status != null  ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteMesBatchById" parameterType="Integer">
+        delete from tab_mes_batch where id = #{id}
+    </delete>
+	
+    <delete id="deleteMesBatchByIds" parameterType="String">
+        delete from tab_mes_batch where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询工单建档信息-->
+    <select id="selectMesBatchByMainInfo" resultMap="MesBatchResult">
+        select * from tab_mes_batch where company_id = #{companyId} and pn_main_info = #{pnMainInfo} limit 1
+    </select>
+    
+</mapper>
